@@ -43,7 +43,7 @@
 .media-cards {
   position: fixed;
   top: clamp(72px, 7vw, 120px);
-  right: clamp(16px, 3vw, 48px);
+  right: clamp(40px, 5vw, 88px);
   z-index: 1;
   display: flex;
   align-items: flex-start;
@@ -64,7 +64,7 @@
   inset: -24px -32px -28px;
   border: 2px solid #111;
   border-radius: 6px;
-  background: #eee9df;
+  background: #73e4e4;
   box-shadow: 7px 7px 0 #111;
   opacity: 0.45;
   pointer-events: none;
@@ -102,9 +102,8 @@
   place-items: center;
   overflow: hidden;
   border: 2px solid #e9e5dc;
-  border-radius: 6px;
-  padding: 4px;
-  background: #111;
+  border-radius: 2px 6px 6px 2px;
+  background: #e9e5dc;
   box-shadow: 6px 6px 0 #111;
 }
 
@@ -249,7 +248,7 @@
 
   .media-cards {
     top: 52px;
-    right: 20px;
+    right: 36px;
     gap: 10px;
   }
 
