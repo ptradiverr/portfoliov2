@@ -6,7 +6,7 @@
 }
 
 .site-nav {
-  position: fixed;
+  position: absolute;
   top: clamp(16px, 2vw, 32px);
   right: clamp(16px, 3vw, 48px);
   z-index: 1;
@@ -41,7 +41,7 @@
 }
 
 .media-cards {
-  position: fixed;
+  position: absolute;
   top: clamp(72px, 7vw, 120px);
   right: clamp(40px, 5vw, 88px);
   z-index: 1;
@@ -64,30 +64,19 @@
   inset: -24px -32px -28px;
   border: 2px solid #111;
   border-radius: 6px;
-  background: #73e4e4;
+  background: #ffffff;
   box-shadow: 7px 7px 0 #111;
   opacity: 0.45;
   pointer-events: none;
 }
 
 .book-cover {
-  display: grid;
   aspect-ratio: 2 / 3;
-  place-items: center;
   overflow: hidden;
   border: 2px solid #e9e5dc;
   border-radius: 2px 6px 6px 2px;
   background: #e9e5dc;
   box-shadow: 6px 6px 0 #111;
-}
-
-.book-cover span {
-  color: #111;
-  font-family: 'Satoshi', sans-serif;
-  font-size: clamp(10px, 1vw, 14px);
-  font-weight: 900;
-  line-height: 1.1;
-  text-transform: uppercase;
 }
 
 .book-cover img {
@@ -96,10 +85,14 @@
   object-fit: cover;
 }
 
+.book-cover a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .game-cover {
-  display: grid;
   aspect-ratio: 2 / 3;
-  place-items: center;
   overflow: hidden;
   border: 2px solid #e9e5dc;
   border-radius: 2px 6px 6px 2px;
@@ -107,25 +100,52 @@
   box-shadow: 6px 6px 0 #111;
 }
 
-.game-cover span {
-  display: grid;
-  width: 100%;
-  height: 100%;
-  place-items: center;
-  border-radius: 2px;
-  background: #dce7e5;
-  color: #111;
-  font-family: 'Satoshi', sans-serif;
-  font-size: clamp(10px, 1vw, 14px);
-  font-weight: 900;
-  line-height: 1.1;
-  text-transform: uppercase;
-}
-
 .game-cover img {
   width: 100%;
   height: 100%;
   border-radius: 2px;
+  object-fit: cover;
+}
+
+.game-cover a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.book-cover,
+.game-cover {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.book-cover:hover,
+.book-cover:focus-within,
+.game-cover:hover,
+.game-cover:focus-within {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 10px 14px 0 #111;
+}
+
+.car-card {
+  position: absolute;
+  top: 70svh;
+  left: 50%;
+  z-index: 0;
+  width: clamp(180px, 28vw, 440px);
+  margin: 0;
+  padding: clamp(4px, 0.6vw, 8px);
+  overflow: hidden;
+  border: 2px solid #111;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 10px 10px 0 #111;
+  transform: translate(-50%, -50%);
+}
+
+.car-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
   object-fit: cover;
 }
 
@@ -186,6 +206,12 @@
   align-items: baseline;
   gap: clamp(8px, 1vw, 18px);
   max-width: calc(100vw - 32px);
+  z-index: 2;
+}
+
+.hero {
+  position: relative;
+  min-height: 100svh;
 }
 
 @keyframes title-enter {
@@ -233,13 +259,36 @@
 }
 
 @media (max-width: 640px) {
+  .hero {
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    padding: 20px;
+  }
+
   .site-nav {
-    width: calc(100% - 32px);
-    justify-content: flex-end;
+    position: static;
+    order: 2;
+    width: 100%;
+    justify-content: flex-start;
+    margin-top: 28px;
   }
 
   .site-nav a {
     font-size: 12px;
+  }
+
+  .intro {
+    position: static;
+    order: 1;
+    width: 100%;
+    max-width: none;
+    gap: 4px 8px;
+  }
+
+  .hero-title {
+    font-size: clamp(34px, 10vw, 56px);
+    white-space: normal;
   }
 
   .hero-tagline {
@@ -247,14 +296,18 @@
   }
 
   .media-cards {
-    top: 52px;
-    right: 36px;
-    gap: 10px;
+    position: relative;
+    top: auto;
+    right: auto;
+    order: 3;
+    align-self: center;
+    gap: clamp(18px, 6vw, 32px);
+    margin-top: 34px;
   }
 
   .currently-reading,
   .currently-playing {
-    width: 92px;
+    width: min(36vw, 140px);
   }
 
   .background-card {
@@ -266,9 +319,14 @@
     margin-top: 8px;
   }
 
-  .intro {
-    flex-wrap: wrap;
-    gap: 4px 8px;
+  .car-card {
+    position: relative;
+    top: auto;
+    left: auto;
+    order: 4;
+    width: min(78vw, 360px);
+    margin: 36px auto 0;
+    transform: none;
   }
 }
 
@@ -284,5 +342,10 @@
   .media-cards,
   .hero-tagline span {
     opacity: 1;
+  }
+
+  .book-cover,
+  .game-cover {
+    transition: none;
   }
 }
