@@ -119,11 +119,15 @@
 }
 
 .book-cover:hover,
-.book-cover:focus-within,
-.game-cover:hover,
-.game-cover:focus-within {
+.game-cover:hover {
   transform: translateY(-8px) scale(1.03);
   box-shadow: 10px 14px 0 #111;
+}
+
+.book-cover a:focus-visible,
+.game-cover a:focus-visible {
+  outline: 3px solid #111;
+  outline-offset: -3px;
 }
 
 .car-card {
