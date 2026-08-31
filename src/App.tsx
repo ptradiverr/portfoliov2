@@ -12,14 +12,15 @@ function App() {
       </nav>
       <div className="media-cards">
         <aside className="currently-reading" aria-label="Currently reading">
-          <div className="book-cover" role="img" aria-label="Book cover placeholder">
-            <span>Book<br />cover</span>
+          <div className="book-cover">
+            <img src="/bookart/canteven.jpg" alt="Can't Even book cover" />
           </div>
           <p>Currently reading</p>
         </aside>
+        <div className="background-card" aria-hidden="true" />
         <aside className="currently-playing" aria-label="Currently playing">
-          <div className="game-cover" role="img" aria-label="Game cover placeholder">
-            <span>Game<br />cover</span>
+          <div className="game-cover">
+            <img src="/gameart/chaoshead.jpg" alt="Chaos;Head game cover" />
           </div>
           <p>Currently playing</p>
         </aside>

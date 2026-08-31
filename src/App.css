@@ -47,7 +47,7 @@
   z-index: 1;
   display: flex;
   align-items: flex-start;
-  gap: clamp(12px, 1.5vw, 24px);
+  gap: clamp(28px, 3vw, 64px);
   opacity: 0;
   animation: cards-enter 1000ms ease-out 4s both;
 }
@@ -58,12 +58,24 @@
   text-align: center;
 }
 
+.background-card {
+  position: absolute;
+  z-index: -1;
+  inset: -24px -32px -28px;
+  border: 2px solid #111;
+  border-radius: 6px;
+  background: #eee9df;
+  box-shadow: 7px 7px 0 #111;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
 .book-cover {
   display: grid;
   aspect-ratio: 2 / 3;
   place-items: center;
   overflow: hidden;
-  border: 2px solid #111;
+  border: 2px solid #e9e5dc;
   border-radius: 2px 6px 6px 2px;
   background: #e9e5dc;
   box-shadow: 6px 6px 0 #111;
@@ -78,24 +90,44 @@
   text-transform: uppercase;
 }
 
+.book-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .game-cover {
   display: grid;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 2 / 3;
   place-items: center;
   overflow: hidden;
-  border: 2px solid #111;
+  border: 2px solid #e9e5dc;
   border-radius: 6px;
-  background: #dce7e5;
+  padding: 4px;
+  background: #111;
   box-shadow: 6px 6px 0 #111;
 }
 
 .game-cover span {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  border-radius: 2px;
+  background: #dce7e5;
   color: #111;
   font-family: 'Satoshi', sans-serif;
   font-size: clamp(10px, 1vw, 14px);
   font-weight: 900;
   line-height: 1.1;
   text-transform: uppercase;
+}
+
+.game-cover img {
+  width: 100%;
+  height: 100%;
+  border-radius: 2px;
+  object-fit: cover;
 }
 
 .currently-reading p,
@@ -218,12 +250,16 @@
   .media-cards {
     top: 52px;
     right: 20px;
-    gap: 12px;
+    gap: 10px;
   }
 
   .currently-reading,
   .currently-playing {
     width: 92px;
+  }
+
+  .background-card {
+    inset: -12px -14px -20px;
   }
 
   .currently-reading p,
