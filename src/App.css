@@ -218,6 +218,14 @@
   min-height: 100svh;
 }
 
+@media (min-width: 1025px) {
+  .intro {
+    right: clamp(440px, 42vw, 640px);
+    max-width: none;
+    flex-wrap: wrap;
+  }
+}
+
 @keyframes title-enter {
   from {
     opacity: 0;
@@ -262,7 +270,7 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 1024px) {
   .hero {
     display: flex;
     flex-direction: column;
