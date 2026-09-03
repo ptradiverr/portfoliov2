@@ -6,10 +6,6 @@ const tagline = '... and this is my website'
 
 function App() {
 
-  const [currentCar, setCurrentCar] = useState(0)
-const [hoveredCar, setHoveredCar] = useState(null)
-const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-
 const cars = [
   {
     image: '/cars/rcf.jpg',
@@ -27,6 +23,32 @@ const cars = [
     info: 'The OG',
   },
 ]
+
+const projects = [
+  {
+    title: 'Wi-Fi 7 MLO Research',
+    description: '802.11be Multi-Link Operation in a classroom environment.',
+    image: '/projects/wifi7.jpg',
+    link: '#',
+  },
+  {
+    title: 'Portfolio',
+    description: 'My personal portfolio and experiments on the web.',
+    image: '/projects/portfolio.jpg',
+    link: '#',
+  },
+  {
+    title: 'Homelab',
+    description: 'Networking, virtualization, containers, and infrastructure.',
+    image: '/projects/homelab.jpg',
+    link: '#',
+  },
+]
+
+const [currentCar, setCurrentCar] = useState(0)
+const [hoveredCar, setHoveredCar] = useState<Car | null>(null)
+const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+const [currentProject, setCurrentProject] = useState(0)
 
 useEffect(() => {
   if (hoveredCar) return
@@ -175,10 +197,75 @@ useEffect(() => {
       </section>
 
       {/* PROJECTS */}
-      <section id="projects" className="projects-section">
-        <p className="section-label">PROJECTS</p>
-        <h2>things I've worked on:</h2>
-      </section>
+{/* PROJECTS */}
+<section id="projects" className="projects-section">
+  <div className="projects-content">
+    <p className="section-label">02 / PROJECTS</p>
+
+    <h2>things I've worked on:</h2>
+
+    <div className="project-carousel">
+      {projects.map((project, index) => {
+        const position =
+          (index - currentProject + projects.length) % projects.length
+
+        return (
+          <a
+            key={project.title}
+            href={project.link}
+            target="_blank"
+            rel="noreferrer"
+            className={`project-card project-position-${position}`}
+          >
+            <div className="project-image">
+              <img src={project.image} alt={project.title} />
+            </div>
+
+            <div className="project-info">
+              <span className="project-number">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+
+              <div>
+                <h3>{project.title}</h3>
+                <p>{project.description}</p>
+              </div>
+
+              <span className="project-arrow">↗</span>
+            </div>
+          </a>
+        )
+      })}
+    </div>
+
+    <div className="project-controls">
+      <button
+        onClick={() =>
+          setCurrentProject(
+            (currentProject - 1 + projects.length) % projects.length
+          )
+        }
+      >
+        ←
+      </button>
+
+      <span>
+        {String(currentProject + 1).padStart(2, '0')} /{' '}
+        {String(projects.length).padStart(2, '0')}
+      </span>
+
+      <button
+        onClick={() =>
+          setCurrentProject(
+            (currentProject + 1) % projects.length
+          )
+        }
+      >
+        →
+      </button>
+    </div>
+  </div>
+</section>
 
 <section id="contact" className="contact-section">
   <div className="contact-content">
