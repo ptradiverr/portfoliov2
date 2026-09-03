@@ -130,29 +130,6 @@
   outline-offset: -3px;
 }
 
-.car-card {
-  position: absolute;
-  top: 70svh;
-  left: 50%;
-  z-index: 0;
-  width: clamp(180px, 28vw, 440px);
-  margin: 0;
-  padding: clamp(4px, 0.6vw, 8px);
-  overflow: hidden;
-  border: 2px solid #111;
-  border-radius: 8px;
-  background: #fff;
-  box-shadow: 10px 10px 0 #111;
-  transform: translate(-50%, -50%);
-}
-
-.car-card img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-}
-
 .currently-reading p,
 .currently-playing p {
   margin: 12px 0 0;
@@ -168,6 +145,121 @@
 .site-nav a:focus-visible {
   opacity: 0.55;
 }
+
+/* ================================
+   CAROUSEL
+================================ */
+
+.car-carousel {
+  position: absolute;
+
+  top: 60svh;
+  left: 35%;
+
+  width: clamp(420px, 50vw, 700px);
+  height: clamp(280px, 35vw, 480px);
+
+  transform: translate(-50%, -50%);
+}
+
+
+.car-card {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: clamp(230px, 27vw, 380px);
+
+  margin: 0;
+  padding: clamp(4px, 0.6vw, 8px);
+
+  overflow: hidden;
+
+  border: 2px solid #111;
+  border-radius: 8px;
+
+  background: #fff;
+  box-shadow: 10px 10px 0 #111;
+
+will-change: transform;
+
+transition:
+  transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+
+.car-card img {
+  display: block;
+
+  width: 100%;
+
+  aspect-ratio: 3 / 4;
+
+  object-fit: cover;
+}
+
+
+.car-position-0 {
+  transform: translate(-50%, -50%) translateY(-35px);
+  z-index: 3;
+}
+
+.car-position-1 {
+  transform: translate(-50%, -50%) translateX(-300px) translateY(15px);
+  z-index: 2;
+}
+
+.car-position-2 {
+  transform: translate(-50%, -50%) translateX(300px) translateY(15px);
+  z-index: 2;
+}
+
+
+.car-tooltip {
+  position: fixed;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 180px;
+  padding: 12px 14px;
+
+  max-width: 220px;
+
+  border: 2px solid #111;
+  background: #fff;
+  box-shadow: 6px 6px 0 #111;
+
+  pointer-events: none;
+
+  animation: tooltip-in 150ms ease-out;
+}
+
+.car-tooltip strong {
+  font-family: 'Satoshi', sans-serif;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.car-tooltip span {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+@keyframes tooltip-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
 
 .hero-title {
   font-family: 'Satoshi', sans-serif;
@@ -270,6 +362,11 @@
   }
 }
 
+
+/* ================================
+   MOBILE
+================================ */
+
 @media (max-width: 1024px) {
   .hero {
     display: flex;
@@ -331,16 +428,63 @@
     margin-top: 8px;
   }
 
-  .car-card {
+   /* MOBILE CAROUSEL */
+
+  .car-carousel {
     position: relative;
+
     top: auto;
     left: auto;
+
     order: 4;
-    width: min(78vw, 360px);
-    margin: 36px auto 0;
+
+    align-self: center;
+
+    width: 100%;
+    height: 340px;
+
+    margin-top: 36px;
+
     transform: none;
   }
+
+
+  .car-card {
+    width: min(30vw, 150px);
+  }
+
+
+  .car-position-0 {
+    transform:
+      translate(-50%, -50%)
+      translateY(-25px);
+
+    z-index: 3;
+  }
+
+
+  .car-position-1 {
+    transform:
+      translate(-50%, -50%)
+      translateX(-70px)
+      translateY(15px);
+
+    z-index: 2;
+  }
+
+
+  .car-position-2 {
+    transform:
+      translate(-50%, -50%)
+      translateX(70px)
+      translateY(15px);
+
+    z-index: 2;
+  }
+
 }
+
+
 
 @media (prefers-reduced-motion: reduce) {
   .hero-title,
@@ -426,7 +570,7 @@ html {
 .contact-section {
   min-height: 100svh;
   padding: clamp(80px, 10vw, 160px) clamp(24px, 8vw, 140px);
-  background: #fff;
+  background: #e9e5dc;
   color: #fff;
 }
 
@@ -505,3 +649,54 @@ html {
 .contact-link:hover .contact-arrow {
   transform: translate(4px, -4px);
 }
+
+/* .other-links-section {
+  margin-top: 55px;
+  text-align: center;
+}
+
+.other-links-title {
+  margin: 0 0 18px;
+  color: #111;
+  font-family: 'Satoshi', sans-serif;
+  font-size: clamp(14px, 1.4vw, 20px);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.other-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.other-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-width: 170px;
+  padding: 12px 16px;
+  border: 2px solid #111;
+  color: #111;
+  font-family: 'Satoshi', sans-serif;
+  font-size: 15px;
+  font-weight: 900;
+  text-decoration: none;
+  transition:
+    transform 180ms ease,
+    background 180ms ease,
+    color 180ms ease;
+}
+
+.other-link:hover {
+  background: #fff;
+  color: #111;
+  transform: translateY(-4px);
+}
+
+.other-link .contact-arrow {
+  font-size: 19px;
+} */

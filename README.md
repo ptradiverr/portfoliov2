@@ -12,4 +12,4 @@ Built with **React, TypeScript, and CSS**
 - CSS
 - Cloudflare Pages
 
-🌐 **Live:** https://rfeng.me
+**Live:** https://rfeng.me

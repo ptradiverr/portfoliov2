@@ -1,8 +1,44 @@
 import './App.css'
+import { useEffect, useState } from 'react'
+import './App.css'
 
 const tagline = '... and this is my website'
 
 function App() {
+
+  const [currentCar, setCurrentCar] = useState(0)
+const [hoveredCar, setHoveredCar] = useState(null)
+const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+
+const cars = [
+  {
+    image: '/cars/rcf.jpg',
+    name: '2015 Lexus RC F',
+    info: 'Ultrasonic Blue Mica · 5.0L naturally aspirated V8 · 472 hp',
+  },
+  {
+    image: '/cars/is350.jpg',
+    name: '✖ Lexus IS 350',
+    info: 'Ultra White · 3.5L naturally aspirated V6 · 311 hp',
+  },
+  {
+    image: '/cars/honda.jpg',
+    name: '✖ 2015 Honda CRV',
+    info: 'The OG',
+  },
+]
+
+useEffect(() => {
+  if (hoveredCar) return
+
+  const interval = setInterval(() => {
+    setCurrentCar((current) => (current + 1) % cars.length)
+  }, 4500)
+
+  return () => clearInterval(interval)
+}, [hoveredCar])
+
+
   return (
     <>
       <section className="hero">
@@ -47,9 +83,42 @@ function App() {
           </aside>
         </div>
 
-        <figure className="car-card">
-          <img src="/cars/car.jpg" alt="Car" />
-        </figure>
+<div className="car-carousel">
+  {cars.map((car, index) => {
+    const position =
+      (index - currentCar + cars.length) % cars.length
+
+    return (
+      <figure
+        key={car.image}
+        className={`car-card car-position-${position}`}
+        onMouseEnter={() => setHoveredCar(car)}
+        onMouseLeave={() => setHoveredCar(null)}
+        onMouseMove={(e) => {
+          setMousePosition({
+            x: e.clientX,
+            y: e.clientY,
+          })
+        }}
+      >
+        <img src={car.image} alt={car.name} />
+      </figure>
+    )
+  })}
+</div>
+
+{hoveredCar && (
+  <div
+    className="car-tooltip"
+    style={{
+      left: mousePosition.x + 18,
+      top: mousePosition.y + 18,
+    }}
+  >
+    <strong>{hoveredCar.name}</strong>
+    <span>{hoveredCar.info}</span>
+  </div>
+)}
 
         <div className="intro">
           <h1 className="hero-title">hi, i'm Ruibing</h1>
@@ -71,7 +140,7 @@ function App() {
       {/* ABOUT */}
       <section id="about" className="about-section">
         <div className="about-content">
-          <p className="section-label">01 / ABOUT</p>
+          <p className="section-label">ABOUT</p>
 
           <h2>
             i like building things
@@ -90,7 +159,7 @@ function App() {
 
             <p>
               I spend a lot of my time working with networks, cloud
-              infrastructure, cybersecurity, and the systems that connect
+              infrastructure, and the systems that connect
               everything together. I'm especially interested in understanding
               how things work underneath the surface and then building
               something with that knowledge.
@@ -107,16 +176,16 @@ function App() {
 
       {/* PROJECTS */}
       <section id="projects" className="projects-section">
-        <p className="section-label">02 / PROJECTS</p>
+        <p className="section-label">PROJECTS</p>
         <h2>things I've worked on:</h2>
       </section>
 
 <section id="contact" className="contact-section">
   <div className="contact-content">
-    <p className="section-label">03 / CONTACT</p>
+    <p className="section-label">CONTACT</p>
 
     <h2>
-      reach me @
+      find me @
     </h2>
 
     <div className="contact-links">
@@ -132,6 +201,17 @@ function App() {
       </a>
 
       <a
+      href="https://www.github.com/ptradiverr"
+      target="_blank"
+      rel="noreferrer"
+      className="contact-link"
+      >
+      <img src="/icons/github.png" alt="" />
+      <span>GitHub</span>
+      <span className="contact-arrow">↗</span>
+    </a>
+
+      <a
         href="mailto:ruibing@rfeng.me"
         className="contact-link"
       >
@@ -141,6 +221,22 @@ function App() {
       </a>
     </div>
   </div>
+
+{/*   <div className="other-links-section">
+  <p className="other-links-title">other links</p>
+
+  <div className="other-links">
+    <a
+      href="https://steamcommunity.com/id/7deag-/"
+      target="_blank"
+      rel="noreferrer"
+      className="other-link"
+    >
+      <span>Steam</span>
+      <span className="contact-arrow">↗</span>
+    </a>
+  </div>
+</div> */}
 </section>
     </>
   )
