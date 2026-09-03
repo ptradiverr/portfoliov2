@@ -238,7 +238,7 @@ function App() {
 
           <h2>things I've worked on:</h2>
 
-          <div className="project-carousel">
+{/*           <div className="project-carousel">
             {projects.map((project, index) => {
               const position =
                 (index - currentProject + projects.length) %
@@ -276,7 +276,6 @@ function App() {
             })}
           </div>
 
-          {/* PROJECT CONTROLS */}
           <div className="project-controls">
             <button
               onClick={() =>
@@ -305,7 +304,7 @@ function App() {
             >
               →
             </button>
-          </div>
+          </div> */}
         </div>
       </section>
 
