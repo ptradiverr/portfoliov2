@@ -7,12 +7,12 @@ type Car = {
   info: string
 }
 
-type Project = {
+/* type Project = {
   title: string
   description: string
   image: string
   link: string
-}
+} */
 
 const tagline = '... and this is my website'
 
@@ -35,7 +35,7 @@ function App() {
     },
   ]
 
-  const projects: Project[] = [
+/*   const projects: Project[] = [
     {
       title: 'Wi-Fi 7 MLO Research',
       description:
@@ -57,7 +57,7 @@ function App() {
       image: '/projects/homelab.jpg',
       link: '#',
     },
-  ]
+  ] */
 
   const [currentCar, setCurrentCar] = useState(0)
   const [hoveredCar, setHoveredCar] = useState<Car | null>(null)
@@ -65,7 +65,7 @@ function App() {
     x: 0,
     y: 0,
   })
-  const [currentProject, setCurrentProject] = useState(0)
+/*   const [currentProject, setCurrentProject] = useState(0) */
 
   useEffect(() => {
     if (hoveredCar) return
