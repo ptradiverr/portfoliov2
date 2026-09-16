@@ -95,14 +95,14 @@ function App() {
           >
             <div className="book-cover">
               <a
-                href="https://openlibrary.org/books/OL29848846M/Can%27t_Even"
+                href="https://openlibrary.org/works/OL20153626W/Bullshit_Jobs"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Open Can't Even on Open Library"
               >
                 <img
-                  src="/bookart/canteven.jpg"
-                  alt="Can't Even book cover"
+                  src="/bookart/bsjobs.jpg"
+                  alt="Bullsh*t jobs book cover"
                 />
               </a>
             </div>
