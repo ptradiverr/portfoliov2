@@ -6,9 +6,10 @@
 }
 
 .site-nav {
-  position: absolute;
-  top: clamp(16px, 2vw, 32px);
-  right: clamp(16px, 3vw, 48px);
+  order: 1;
+  width: 100%;
+  justify-content: flex-end;
+  flex-wrap: wrap;
   z-index: 1;
   display: flex;
   align-items: center;
@@ -41,9 +42,10 @@
 }
 
 .media-cards {
-  position: absolute;
-  top: clamp(72px, 7vw, 120px);
-  right: clamp(40px, 5vw, 88px);
+  position: relative;
+  order: 3;
+  margin-inline: auto;
+  padding: 24px 32px 28px;
   z-index: 1;
   display: flex;
   align-items: flex-start;
@@ -61,7 +63,7 @@
 .background-card {
   position: absolute;
   z-index: -1;
-  inset: -24px -32px -28px;
+  inset: 0;
   border: 2px solid #111;
   border-radius: 6px;
   background: #ffffff;
@@ -151,15 +153,10 @@
 ================================ */
 
 .car-carousel {
-  position: absolute;
-
-  top: 60svh;
-  left: 35%;
-
-  width: clamp(420px, 50vw, 700px);
-  height: clamp(280px, 35vw, 480px);
-
-  transform: translate(-50%, -50%);
+  position: relative;
+  order: 4;
+  width: 100%;
+  height: clamp(420px, 45vw, 620px);
 }
 
 
@@ -293,27 +290,25 @@ transition:
 }
 
 .intro {
-  position: absolute;
-  top: clamp(12px, 8vw, 60px);
-  left: clamp(36px, 1vw, 52px);
+  order: 2;
+  flex: 1 1 520px;
+  min-width: 0;
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: clamp(8px, 1vw, 18px);
-  max-width: calc(100vw - 32px);
+  text-align: left;
   z-index: 2;
 }
 
 .hero {
   position: relative;
-  min-height: 100svh;
-}
-
-@media (min-width: 1025px) {
-  .intro {
-    right: clamp(440px, 42vw, 640px);
-    max-width: none;
-    flex-wrap: wrap;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(28px, 4vw, 64px);
+  padding: clamp(24px, 3vw, 48px) clamp(24px, 4vw, 64px)
+    var(--section-space);
 }
 
 @keyframes title-enter {
@@ -361,8 +356,6 @@ transition:
 }
 
 .projects-section {
-  min-height: 100svh;
-  padding: 120px 0;
   overflow: hidden;
 }
 
@@ -530,10 +523,9 @@ transition:
 
 @media (max-width: 1024px) {
   .hero {
-    display: flex;
     flex-direction: column;
-    min-height: 100svh;
-    padding: 20px;
+    align-items: stretch;
+    padding: 24px 24px var(--section-space);
   }
 
   .site-nav {
@@ -541,7 +533,6 @@ transition:
     order: 2;
     width: 100%;
     justify-content: flex-start;
-    margin-top: 28px;
   }
 
   .site-nav a {
@@ -549,7 +540,7 @@ transition:
   }
 
   .intro {
-    position: static;
+    flex: auto;
     order: 1;
     width: 100%;
     max-width: none;
@@ -566,22 +557,15 @@ transition:
   }
 
   .media-cards {
-    position: relative;
-    top: auto;
-    right: auto;
     order: 3;
     align-self: center;
     gap: clamp(18px, 6vw, 32px);
-    margin-top: 34px;
+    padding: 12px 14px 20px;
   }
 
   .currently-reading,
   .currently-playing {
     width: min(36vw, 140px);
-  }
-
-  .background-card {
-    inset: -12px -14px -20px;
   }
 
   .currently-reading p,
@@ -603,8 +587,6 @@ transition:
 
     width: 100%;
     height: 340px;
-
-    margin-top: 36px;
 
     transform: none;
   }
@@ -671,9 +653,13 @@ html {
   scroll-behavior: smooth;
 }
 
+.about-section,
+.projects-section,
+.contact-section {
+  padding: var(--section-space) clamp(24px, 8vw, 140px);
+}
+
 .about-section {
-  min-height: 100svh;
-  padding: clamp(80px, 10vw, 160px) clamp(24px, 8vw, 140px);
   background: #e9e5dc;
   color: #111;
 }
@@ -702,7 +688,7 @@ html {
 
 .about-text {
   max-width: 650px;
-  margin-top: 70px;
+  margin-top: clamp(32px, 4vw, 56px);
   margin-left: auto;
 }
 
@@ -713,10 +699,8 @@ html {
   line-height: 1.45;
 }
 
-.projects-section,
-.contact-section {
-  min-height: 100svh;
-  padding: clamp(80px, 10vw, 160px) clamp(24px, 8vw, 140px);
+.about-text p:last-child {
+  margin-bottom: 0;
 }
 
 .projects-section h2,
@@ -729,8 +713,6 @@ html {
 }
 
 .contact-section {
-  min-height: 100svh;
-  padding: clamp(80px, 10vw, 160px) clamp(24px, 8vw, 140px);
   background: #e9e5dc;
   color: #fff;
 }
@@ -758,7 +740,7 @@ html {
   justify-content: center;
   align-items: center;
   gap: 24px;
-  margin-top: 80px;
+  margin-top: clamp(32px, 4vw, 56px);
   flex-wrap: wrap;
 }
 

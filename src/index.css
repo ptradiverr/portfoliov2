@@ -1,4 +1,5 @@
 :root {
+  --section-space: clamp(48px, 6vw, 96px);
   --text: #6b6375;
   --text-h: #08060d;
   --bg: #fff;

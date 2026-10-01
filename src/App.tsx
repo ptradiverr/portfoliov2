@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import ScreenCarousel from './ScreenCarousel'
 
 type Car = {
   image: string
@@ -15,6 +16,7 @@ type Car = {
 } */
 
 const tagline = '... and this is my website'
+const showCarPanels = false
 
 function App() {
   const cars: Car[] = [
@@ -68,14 +70,14 @@ function App() {
 /*   const [currentProject, setCurrentProject] = useState(0) */
 
   useEffect(() => {
-    if (hoveredCar) return
+    if (!showCarPanels || hoveredCar) return
 
     const interval = setInterval(() => {
       setCurrentCar((current) => (current + 1) % cars.length)
     }, 4500)
 
     return () => clearInterval(interval)
-  }, [hoveredCar])
+  }, [hoveredCar, cars.length])
 
   return (
     <>
@@ -136,7 +138,7 @@ function App() {
         </div>
 
         {/* CAROUSEL */}
-        <div className="car-carousel">
+        {showCarPanels && <div className="car-carousel">
           {cars.map((car, index) => {
             const position =
               (index - currentCar + cars.length) % cars.length
@@ -158,10 +160,10 @@ function App() {
               </figure>
             )
           })}
-        </div>
+        </div>}
 
         {/* CAR TOOLTIP */}
-        {hoveredCar && (
+        {showCarPanels && hoveredCar && (
           <div
             className="car-tooltip"
             style={{
@@ -370,6 +372,7 @@ function App() {
         </div>
         */}
       </section>
+      <ScreenCarousel />
     </>
   )
 }

@@ -1,0 +1,166 @@
+.screen-section {
+  width: 100%;
+  min-width: 0;
+  padding: var(--section-space) 0 40px;
+  background: #f4f1eb;
+  color: #111;
+  border-block: 2px solid #111;
+  text-align: left;
+}
+
+.screen-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  padding-inline: clamp(24px, 6vw, 96px);
+  margin-bottom: 40px;
+}
+
+.screen-header h2 {
+  margin: 0;
+  font-family: 'Satoshi', sans-serif;
+  font-size: clamp(44px, 7vw, 104px);
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.screen-viewport {
+  overflow: hidden;
+  padding-block: 12px 28px;
+}
+
+.screen-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.screen-cover-button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.screen-cover-button:focus-visible {
+  outline: 3px solid #3153ad;
+  outline-offset: 8px;
+}
+
+/* Matching groups include the trailing gap so the loop has no visible seam. */
+.screen-group {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-around;
+  gap: clamp(20px, 2.5vw, 40px);
+  padding-right: clamp(20px, 2.5vw, 40px);
+  min-width: 100vw;
+  flex-shrink: 0;
+}
+
+.screen-card {
+  width: clamp(200px, 22vw, 320px);
+  flex-shrink: 0;
+  min-width: 0;
+  margin: 0;
+}
+
+.screen-cover {
+  aspect-ratio: 2 / 3;
+  border: 2px solid #111;
+  box-shadow: 7px 7px 0 #111;
+  overflow: hidden;
+  transition: transform 180ms ease;
+}
+
+.screen-cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (hover: hover) {
+  .screen-card:hover .screen-cover {
+    transform: translateY(-8px) rotate(-1deg);
+  }
+}
+
+.screen-color-0 { background: #b9c8d4; }
+.screen-color-1 { background: #d7b6a2; }
+.screen-color-2 { background: #bec4a8; }
+.screen-color-3 { background: #c1b7cd; }
+
+.screen-placeholder {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 900;
+  background: repeating-linear-gradient(-35deg, transparent 0 44px, #ffffff26 44px 46px);
+}
+
+.screen-placeholder-label,
+.screen-placeholder-note {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.screen-placeholder-number {
+  font-size: clamp(80px, 11vw, 156px);
+  line-height: 1;
+  letter-spacing: -0.09em;
+  align-self: center;
+  color: #f4f1eb;
+  -webkit-text-stroke: 2px #111;
+  paint-order: stroke fill;
+}
+
+.screen-card figcaption {
+  margin-top: 22px;
+}
+
+.screen-card h3 {
+  margin: 0;
+  font-family: 'Satoshi', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.screen-card figcaption > span {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 600px) {
+  .screen-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .screen-card {
+    width: 64vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .screen-cover {
+    transition: none;
+  }
+}
