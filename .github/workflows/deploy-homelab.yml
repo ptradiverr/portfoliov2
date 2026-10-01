@@ -1,0 +1,27 @@
+# Install this file in ptradiverr/portfoliov2 at .github/workflows/deploy-homelab.yml.
+name: Deploy portfolio to homelab
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  request-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Request portfolio build and deployment
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.HOMELAB_ACTIONS_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: 'ptradiverr',
+              repo: 'homelab',
+              workflow_id: 'build-portfolio.yml',
+              ref: 'main',
+              inputs: { portfolio_ref: 'main', deploy: 'true' }
+            });
+            core.notice('Build requested. Follow build and deployment runs in ptradiverr/homelab Actions.');
