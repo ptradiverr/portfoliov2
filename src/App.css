@@ -664,6 +664,28 @@ html {
   color: #111;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .about-section,
+  .projects-section,
+  .contact-section,
+  .screen-section {
+    /* Follow the hero's final reveal (4s delay + 1s duration). */
+    animation: cards-enter 500ms ease-out 5s both;
+  }
+
+  .projects-section {
+    animation-delay: 5.5s;
+  }
+
+  .contact-section {
+    animation-delay: 6s;
+  }
+
+  .screen-section {
+    animation-delay: 6.5s;
+  }
+}
+
 .about-content {
   max-width: 1200px;
   margin: 0 auto;
