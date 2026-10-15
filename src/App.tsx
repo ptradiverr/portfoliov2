@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import ScreenCarousel from './ScreenCarousel'
+import ProjectCarousel from './ProjectCarousel'
 
 type Car = {
   image: string
@@ -17,6 +18,7 @@ type Car = {
 
 const tagline = '... and this is my website'
 const showCarPanels = false
+const showGoodFlix = false
 
 function App() {
   const cars: Car[] = [
@@ -233,82 +235,7 @@ function App() {
         </div>
       </section>
 
-      {/* PROJECTS */}
-      <section id="projects" className="projects-section">
-        <div className="projects-content">
-          <p className="section-label">02 / PROJECTS</p>
-
-          <h2>things I've worked on:</h2>
-
-{/*           <div className="project-carousel">
-            {projects.map((project, index) => {
-              const position =
-                (index - currentProject + projects.length) %
-                projects.length
-
-              return (
-                <a
-                  key={project.title}
-                  href={project.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={`project-card project-position-${position}`}
-                >
-                  <div className="project-image">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                    />
-                  </div>
-
-                  <div className="project-info">
-                    <span className="project-number">
-                      {String(index + 1).padStart(2, '0')}
-                    </span>
-
-                    <div>
-                      <h3>{project.title}</h3>
-                      <p>{project.description}</p>
-                    </div>
-
-                    <span className="project-arrow">↗</span>
-                  </div>
-                </a>
-              )
-            })}
-          </div>
-
-          <div className="project-controls">
-            <button
-              onClick={() =>
-                setCurrentProject(
-                  (currentProject - 1 + projects.length) %
-                    projects.length
-                )
-              }
-              aria-label="Previous project"
-            >
-              ←
-            </button>
-
-            <span>
-              {String(currentProject + 1).padStart(2, '0')} /{' '}
-              {String(projects.length).padStart(2, '0')}
-            </span>
-
-            <button
-              onClick={() =>
-                setCurrentProject(
-                  (currentProject + 1) % projects.length
-                )
-              }
-              aria-label="Next project"
-            >
-              →
-            </button>
-          </div> */}
-        </div>
-      </section>
+      <ProjectCarousel />
 
       {/* CONTACT */}
       <section id="contact" className="contact-section">
@@ -372,7 +299,7 @@ function App() {
         </div>
         */}
       </section>
-      <ScreenCarousel />
+      {showGoodFlix && <ScreenCarousel />}
     </>
   )
 }

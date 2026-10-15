@@ -686,6 +686,19 @@ html {
   }
 }
 
+/* Returning home within the same tab session should reveal content immediately. */
+:where(.skip-home-intro) .hero-title,
+:where(.skip-home-intro) .site-nav a,
+:where(.skip-home-intro) .media-cards,
+:where(.skip-home-intro) .hero-tagline span,
+:where(.skip-home-intro) .about-section,
+:where(.skip-home-intro) .projects-section,
+:where(.skip-home-intro) .contact-section,
+:where(.skip-home-intro) .screen-section {
+  animation: none;
+  opacity: 1;
+}
+
 .about-content {
   max-width: 1200px;
   margin: 0 auto;
