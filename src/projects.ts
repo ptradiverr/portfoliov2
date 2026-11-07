@@ -57,4 +57,55 @@ export const projects: ProjectWriteup[] = [
       },
     ],
   },
+
+  {
+    slug: 'tcp-larp-speculative-pacing',
+    title: 'TCP LARP: Fast Startup Through Speculative Pacing',
+    summary: 'A deep dive into a custom Linux kernel TCP congestion controller that bypasses slow-start using mathematical pacing bounds and delay-driven relaxation.',
+    tags: ['Networking', 'Linux Kernel', 'TCP/IP', 'C', 'Congestion Control'],
+    image: {
+      src: '/post_images/tcp_larp_architecture.jpg',
+      alt: 'TCP LARP state machine from bounded launch to qualified growth',
+      caption: 'The core control loop: moving from a speculative launch to a feedback-adaptive state.',
+    },
+    sections: [
+      {
+        heading: 'the problem with slow start',
+        paragraphs: [
+          "If you're downloading a large payload before your application can move to its next compute step, you are entirely at the mercy of TCP's initial caution. A new TCP connection has no idea what the path's capacity is, so it defaults to 'slow start'—probing the network and waiting for acknowledgments (ACKs) to scale up its transmission window.",
+          "Mathematically, a fixed flight window $W$ with a maximum segment size $M$ caps your payload rate at $x \\le \\frac{W \\cdot M}{RTT}$. If you have an initial window of 10 segments on a 30 ms RTT link, you are artificially bottlenecking yourself regardless of the physical link's speed.",
+          "I wanted to test a different hypothesis: what if we assume the network is incredibly fast by default, and only back off if we actually break something? This turned into a research project to build a bounded, speculative launch controller in the Linux kernel."
+        ],
+      },
+      {
+        heading: 'the math behind speculative launch',
+        paragraphs: [
+          "Instead of waiting for ACKs to authorize a higher rate, TCP LARP initializes with a massive speculative guess. We set the initial pacing target $R_0 = 125,000,000$ bytes/s (1 Gbps) and a hard flight bound of $W_{cap} = 512$ segments.",
+          "During this launch phase, a flag $L$ (learned-feedback) is set to 0. We define a baseline minimum RTT interval as $G = \\max(\\hat{T}, 1 \\text{ ms})$. To ensure we have enough data in flight to actually sustain our pacing target without starving the pipe, the target window is calculated as:",
+          "$$W^*(R) = \\min(W_{cap}, \\max(4, \\lceil \\frac{2RG}{M} \\rceil))$$",
+          "That factor of 2 provides a rate-RTT flight budget. The connection blasts data based on these equations before receiving a single piece of delivery evidence. But to keep this from being a total network DDOS, $L$ flips to 1 the moment we receive our first valid, non-zero delivery sample. Once $L=1$, the hard 512-segment cap is released, and the socket's normal congestion-window clamp takes over, allowing us to grow past 1 Gbps if the path supports it."
+        ],
+      },
+      {
+        heading: 'adaptive rate relaxation',
+        paragraphs: [
+          "A speculative launch is useless if it can't adapt to reality. Once LARP starts getting ACKs, it relies on Linux's per-ACK `rate_sample` interface to monitor delay. We define a delay threshold $\\theta = \\max(500 \\mu s, \\hat{T}/8)$. If the current RTT exceeds the baseline by $\\theta$, we trigger a delay episode.",
+          "Congestion feedback always takes priority over growth. If we hit a delay-only event, we relax the pacing rate $R$ using recent maximum delivery $\\hat{B}$ as a guide:",
+          "$$R^+ = \\max(R_{min}, \\min(R, \\max(0.70R, 0.90\\hat{B})))$$",
+          "If the network screams at us with Explicit Congestion Notification (ECN) or actual packet loss, we drop the rate much harder, immediately cutting to $0.70R$. This hysteresis means an unchanged standing queue won't trigger continuous rate reductions on every single ACK, but it prevents us from completely saturating a constrained bottleneck."
+        ],
+      },
+      {
+        heading: 'kernel hacking and reality checks',
+        paragraphs: [
+          "Writing this meant getting deep into the Linux kernel (`kernel/tcp_larp.c`), managing callbacks, pacing requests, and integrating with the sender `fq` queue. We spun up an isolated ARM64 QEMU environment with heavily controlled token-bucket filters to benchmark this against native CUBIC and BBR v1.",
+          "The raw performance was exactly what we hoped for. On a 1 Gbps, 30 ms path, LARP finished a 128 MiB transfer in 1.288 seconds, beating both CUBIC (1.423s) and BBR v1 (1.441s). On a faster 2 Gbps path, our controller dynamically scaled past the 1 Gbps launch guess to deliver 1879.50 Mbps of payload.",
+          "But there's a catch, which was a great lesson in network infrastructure: aggressive behavior has a cost. When we tested LARP against an incumbent CUBIC flow on a constrained 100 Mbps link, LARP commanded 93.58 Mbps and squeezed the CUBIC flow down to 2.44 Mbps. It completely bullied the shared link.",
+          "Ultimately, the project proved that a carefully bounded speculative launch can massively accelerate completion times for data-heavy applications. However, taking it into production would require tightening the fairness mechanics so it doesn't push existing traffic off the road. It was an incredible way to bridge the gap between theoretical math and low-level OS engineering."
+        ],
+      },
+    ],
+  }
 ]
+
+

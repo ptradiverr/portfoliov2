@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
 import { projects } from './projects'
+import 'katex/dist/katex.min.css' // <-- Add KaTeX CSS
+import Latex from 'react-latex-next' // <-- Add Latex component
 import './ProjectPage.css'
 
 export default function ProjectPage({ slug }: { slug: string }) {
@@ -44,7 +46,9 @@ export default function ProjectPage({ slug }: { slug: string }) {
                 </div>
                 <div className="writeup-copy">
                   {section.paragraphs.map((paragraph, paragraphIndex) => (
-                    <p key={paragraphIndex}>{paragraph}</p>
+                    <p key={paragraphIndex}>
+                      <Latex>{paragraph}</Latex>
+                    </p>
                   ))}
                 </div>
               </section>

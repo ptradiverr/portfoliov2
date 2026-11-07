@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "katex": "^0.19.1",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-latex-next": "^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",
@@ -25,5 +27,8 @@
     "oxlint": "^1.79.0",
     "typescript": "~6.0.2",
     "vite": "^8.2.2"
+  },
+  "allowScripts": {
+    "fsevents@2.3.3": true
   }
 }
