@@ -17,6 +17,7 @@ type Car = {
 } */
 
 const tagline = '... and this is my website'
+const showMediaCards = false
 const showCarPanels = false
 const showGoodFlix = false
 
@@ -91,7 +92,7 @@ function App() {
           <a href="#contact">Contact</a>
         </nav>
 
-        <div className="media-cards">
+        {showMediaCards && <div className="media-cards">
           {/* CURRENTLY READING */}
           <aside
             className="currently-reading"
@@ -137,7 +138,7 @@ function App() {
 
             <p>Currently playing</p>
           </aside>
-        </div>
+        </div>}
 
         {/* CAROUSEL */}
         {showCarPanels && <div className="car-carousel">
