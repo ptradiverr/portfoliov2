@@ -96,6 +96,15 @@ export const projects: ProjectWriteup[] = [
         ],
       },
       {
+        heading: 'the lab setup and methodology',
+        paragraphs: [
+          "To prove LARP worked, we couldn't just rely on high-level network simulators; we needed to see how the actual OS networking stack behaved. We compiled our modified TCP controller into a real Linux kernel (v6.12) and ran it inside a diskless ARM64 QEMU virtual machine.",
+          "Inside that VM, we used Linux network namespaces to build a completely isolated virtual topology. We spun up five distinct namespaces: two independent senders, a bottleneck router, a delay router, and a single receiver. To emulate real-world link conditions, we used a Token Bucket Filter (TBF) to strictly shape the forward bottleneck capacity, and `netem` to inject artificial round-trip times (RTT) across the link. We were also careful to route the returning ACKs around the forward rate shaper so our delivery measurements wouldn't be distorted.",
+          "With the sandbox built, we pitted LARP against the native, unmodified kernel implementations of TCP CUBIC and BBR v1. We ran workloads across several distinct network profiles—ranging from a constrained 25 Mbps link with RED/ECN queues up to a massive 2 Gbps and 5 Gbps datacenter-style path.",
+          "The testing wasn't just about solo speed. We measured finite object transfers (like 1 MiB or 128 MiB payloads) to see how fast an application could theoretically fetch data, but we also ran continuous, simultaneous flow tests. Pitting a newly launched LARP connection directly against an established CUBIC or BBR flow is what ultimately exposed the controller's aggressive sharing behavior, proving that while it is incredibly fast, it requires careful tuning to play nicely in a shared ecosystem[cite: 4, 5, 7]."
+        ],
+      },
+      {
         heading: 'kernel hacking and reality checks',
         paragraphs: [
           "Writing this meant getting deep into the Linux kernel (`kernel/tcp_larp.c`), managing callbacks, pacing requests, and integrating with the sender `fq` queue. We spun up an isolated ARM64 QEMU environment with heavily controlled token-bucket filters to benchmark this against native CUBIC and BBR v1.",

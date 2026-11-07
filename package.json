@@ -12,8 +12,7 @@
   "dependencies": {
     "katex": "^0.19.1",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "react-latex-next": "^3.0.0"
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",

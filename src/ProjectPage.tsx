@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { projects } from './projects'
-import 'katex/dist/katex.min.css' // <-- Add KaTeX CSS
-import Latex from 'react-latex-next' // <-- Add Latex component
+import Latex from './Latex'
 import './ProjectPage.css'
 
 export default function ProjectPage({ slug }: { slug: string }) {
