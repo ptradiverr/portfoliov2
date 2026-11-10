@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { projects } from './projects'
 import Latex from './Latex'
+import InteractiveNotebook from './InteractiveNotebook'
 import './ProjectPage.css'
 
 export default function ProjectPage({ slug }: { slug: string }) {
@@ -49,7 +50,23 @@ export default function ProjectPage({ slug }: { slug: string }) {
                       <Latex>{paragraph}</Latex>
                     </p>
                   ))}
+                  {section.links && (
+                    <ul className="writeup-links">
+                      {section.links.map((link) => (
+                        <li key={link.href}><a href={link.href}>{link.label}</a></li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
+                {section.interactive && (
+                  <InteractiveNotebook key={section.interactive.src} {...section.interactive} />
+                )}
+                {section.image && (
+                  <figure className="writeup-figure writeup-section-figure">
+                    <img className="writeup-image" src={section.image.src} alt={section.image.alt} loading="lazy" />
+                    {section.image.caption && <figcaption>{section.image.caption}</figcaption>}
+                  </figure>
+                )}
               </section>
             ))}
           </div>
