@@ -57,14 +57,14 @@ function RollingProjectCards() {
   return (
     <div className="screen-viewport" ref={viewportRef} aria-roledescription="carousel">
       <div className="screen-track" ref={trackRef}>
-        {[0, 1].map((copy) => (
-          <div className="screen-group" key={copy} aria-hidden={copy === 1 ? true : undefined}>
+        {[0, 1, 2].map((copy) => (
+          <div className="screen-group" key={copy} aria-hidden={copy !== 1 ? true : undefined}>
             {cards.map((project, index) => (
               <ProjectCard
                 key={`${project.slug}-${index}`}
                 project={project}
                 index={index % projects.length}
-                duplicate={copy === 1 || index >= projects.length}
+                duplicate={copy !== 1 || index >= projects.length}
                 onFocus={centerItem}
               />
             ))}

@@ -60,15 +60,15 @@ export default function ScreenCarousel() {
 
       <div className="screen-viewport" ref={viewportRef}>
         <div className="screen-track" ref={trackRef}>
-          {[0, 1].map((copy) => (
-            <div className="screen-group" key={copy} aria-hidden={copy === 1 ? true : undefined}>
+          {[0, 1, 2].map((copy) => (
+            <div className="screen-group" key={copy} aria-hidden={copy !== 1 ? true : undefined}>
               {screenPicks.map((pick, index) => (
                 <figure className="screen-card" key={pick.title}>
                   <button
                     className="screen-cover-button"
                     type="button"
                     aria-label={`Center ${pick.title}`}
-                    tabIndex={copy === 1 ? -1 : 0}
+                    tabIndex={copy !== 1 ? -1 : 0}
                     onClick={(event) => centerItem(event.currentTarget)}
                     onFocus={(event) => {
                       if (event.currentTarget.matches(':focus-visible')) centerItem(event.currentTarget)

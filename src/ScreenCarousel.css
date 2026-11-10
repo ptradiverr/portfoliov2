@@ -27,14 +27,22 @@
 }
 
 .screen-viewport {
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  overflow-anchor: none;
+  scrollbar-width: none;
+  scroll-behavior: auto;
   padding-block: 12px 28px;
+}
+
+.screen-viewport::-webkit-scrollbar {
+  display: none;
 }
 
 .screen-track {
   display: flex;
   width: max-content;
-  will-change: transform;
 }
 
 .screen-cover-button {
