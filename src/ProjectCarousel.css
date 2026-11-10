@@ -14,6 +14,115 @@
   letter-spacing: -0.05em;
 }
 
+.project-filters {
+  padding-inline: clamp(24px, 6vw, 96px);
+  margin-bottom: 28px;
+}
+
+.project-search {
+  display: grid;
+  gap: 10px;
+  max-width: 600px;
+  font: 700 14px 'Satoshi', sans-serif;
+}
+
+.project-search input {
+  width: 100%;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 2px solid #111;
+  border-radius: 0;
+  background: #fff;
+  color: #111;
+  font: 400 16px 'Satoshi', sans-serif;
+}
+
+.project-tag-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.project-tag-filters[hidden] {
+  display: none;
+}
+
+.project-tag-toggle {
+  margin-top: 24px;
+}
+
+.project-tag-toggle,
+.project-tag-filters button,
+.project-filter-status button {
+  padding: 10px 14px;
+  border: 2px solid #111;
+  background: #fff;
+  color: #111;
+  font: 700 13px 'Satoshi', sans-serif;
+  cursor: pointer;
+}
+
+.project-tag-filters button[aria-pressed='true'] {
+  background: #111;
+  color: #fff;
+}
+
+.project-filters :is(input, button):focus-visible {
+  outline: 3px solid #3153ad;
+  outline-offset: 4px;
+}
+
+.project-filter-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  min-height: 44px;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.project-filter-status button {
+  border-color: transparent;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.project-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  align-items: stretch;
+  gap: 32px;
+  padding: 12px clamp(24px, 6vw, 96px) 28px;
+}
+
+.project-results-grid .project-tile {
+  width: 100%;
+  max-width: 420px;
+}
+
+.project-empty {
+  padding: 24px clamp(24px, 6vw, 96px) 40px;
+  line-height: 1.7;
+}
+
+.project-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-card-tags li {
+  padding: 4px 8px;
+  background: #e9e5dc;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
 .project-tile {
   display: flex;
   flex-direction: column;
@@ -46,6 +155,11 @@
   aspect-ratio: 4 / 3;
   object-fit: cover;
   border-bottom: 2px solid #111;
+}
+
+.project-tile-image-contain {
+  object-fit: contain;
+  background: #fff;
 }
 
 .project-tile-art {

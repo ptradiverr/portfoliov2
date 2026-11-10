@@ -26,7 +26,9 @@ export default function ProjectPage({ slug }: { slug: string }) {
             <p className="writeup-summary">{project.summary}</p>
             {project.tags.length > 0 && (
               <ul className="writeup-tags" aria-label="Tools and technologies">
-                {project.tags.map((tag) => <li key={tag}>{tag}</li>)}
+                {project.tags.map((tag) => (
+                  <li key={tag}><a href={`/?tag=${encodeURIComponent(tag)}#projects`}>{tag}</a></li>
+                ))}
               </ul>
             )}
           </header>

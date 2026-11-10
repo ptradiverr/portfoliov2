@@ -24,7 +24,7 @@ const showGoodFlix = false
 function App() {
   const cars: Car[] = [
     {
-      image: '/cars/rcf.jpg',
+      image: '/cars/rcf-about.jpg',
       name: '2015 Lexus RC F',
       info: 'Ultrasonic Blue Mica · 5.0L naturally aspirated V8 · 472 hp',
     },
@@ -212,26 +212,38 @@ function App() {
             they work.
           </h2>
 
-          <div className="about-text">
-            <p>
-              I'm a cybersecurity and networking student who enjoys
-              working within the domains of infrastructure, security,
-              and technology.
-            </p>
+          <div className="about-details">
+            <figure className="about-photo">
+              <img
+                src="/cars/rcf-about.jpg"
+                alt="My blue Lexus RC F parked in a grassy clearing surrounded by trees"
+                width="1200"
+                height="1600"
+                loading="lazy"
+              />
+              <figcaption>my 2015 lexus rcf</figcaption>
+            </figure>
+            <div className="about-text">
+              <p>
+                I'm a cybersecurity and networking student who enjoys
+                working within the domains of infrastructure, security,
+                and technology.
+              </p>
 
-            <p>
-              I spend a lot of my time working with networks, cloud
-              infrastructure, and the systems that connect
-              everything together. I'm especially interested in
-              understanding how things work underneath the surface
-              and then building something with that knowledge.
-            </p>
+              <p>
+                I spend a lot of my time working with networks, cloud
+                infrastructure, and the systems that connect
+                everything together. I'm especially interested in
+                understanding how things work underneath the surface
+                and then building something with that knowledge.
+              </p>
 
-            <p>
-              Outside of school and work, you'll usually find me
-              working on tech projects, reading, gaming, or finding
-              something new to learn.
-            </p>
+              <p>
+                Outside of school and work, you'll usually find me
+                working on whatever I think up, reading, or finding
+                something new to learn.
+              </p>
+            </div>
           </div>
         </div>
       </section>

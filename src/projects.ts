@@ -1,4 +1,9 @@
-export type ProjectImage = { src: string; alt: string; caption?: string }
+export type ProjectImage = {
+  src: string
+  alt: string
+  caption?: string
+  previewFit?: 'cover' | 'contain'
+}
 
 export type ProjectWriteup = {
   slug: string
@@ -24,7 +29,7 @@ export const projects: ProjectWriteup[] = [
     summary: 'Turning five Raspberry Pis into a home Kubernetes lab for this site, monitoring, and hands-on infrastructure practice.',
     tags: ['Kubernetes', 'Raspberry Pi', 'Home Lab', 'DevOps'],
     image: {
-      src: '/post_images/rack.png',
+      src: '/post_images/rack-cover.jpg',
       alt: 'Home lab rack for my Raspberry Pi Kubernetes cluster',
       caption: 'Current "rack" infrastructure (ignore the terrible cable management)',
     },
@@ -70,8 +75,8 @@ export const projects: ProjectWriteup[] = [
     tags: ['Networking', 'Linux Kernel', 'TCP/IP', 'C', 'Congestion Control'],
     image: {
       src: '/post_images/tcp_larp_architecture.jpg',
-      alt: 'TCP LARP state machine from bounded launch to qualified growth',
-      caption: 'The core control loop: moving from a speculative launch to a feedback-adaptive state.',
+      alt: 'TCP LARP architecture showing speculative launch, feedback adaptation, and pacing control',
+      previewFit: 'contain',
     },
     sections: [
       {
@@ -219,5 +224,169 @@ export const projects: ProjectWriteup[] = [
         ]
       }
     ],
+  },
+  {
+    "slug": "wifi7-multi-link-operation-thesis",
+    "title": "Wi-Fi 7 MLO: Measuring What Multiple Links Actually Deliver",
+    "summary": "My Purdue thesis: testing Wi-Fi 7 Multi-Link Operation across 285 lab runs to understand its throughput gains, client scaling, and response to distance.",
+    "tags": [
+      "Wi-Fi 7",
+      "802.11be",
+      "Wireless Networking",
+      "MLO",
+      "Research"
+    ],
+    "image": {
+      "src": "/post_images/wifi7_mlo_testbed.png",
+      "previewFit": "contain",
+      "alt": "Thesis network topology with a wired iPerf3 endpoint, a 2.5G PoE switch, a UniFi U7 Pro access point, a monitoring machine, and eight wireless clients.",
+      "caption": "Thesis Figure 2: the physical testbed. TCP payload travels from the wired endpoint through the AP to the wireless clients."
+    },
+    "sections": [
+      {
+        "heading": "the question behind the upgrade",
+        "paragraphs": [
+          "Wi-Fi upgrades are easy to describe in terms of the next standard and its headline speed. The harder question is what changes when several people are actually using the network. For my thesis at Purdue, I wanted to put one of Wi-Fi 7’s main features, Multi-Link Operation, into a physical lab and measure where its throughput advantage appeared.",
+          "The setting was a university computer laboratory, with real access-point hardware, laptops, desks, and the RF conditions that come with an indoor space. I compared MLO against 5 GHz and 6 GHz single-link Wi-Fi 7 while changing how many clients were active and how far they were from the access point. Both baselines were Wi-Fi 7 configurations, so this was a study of the operating mode within the same generation.",
+          "The result depended heavily on the workload. MLO delivered more aggregate throughput in every tested multi-client condition, but a single client never exceeded the 6 GHz single-link result. That distinction became the central finding: additional network capacity under concurrent demand does not automatically mean a faster connection for one device."
+        ]
+      },
+      {
+        "heading": "what multiple links actually change",
+        "paragraphs": [
+          "Multi-Link Operation lets a compatible access point and client coordinate multiple affiliated wireless links within one logical association. In this study, those links were in the 5 GHz and 6 GHz bands. The practical opportunity is to make use of more than one set of wireless resources as traffic and link conditions change.",
+          "That still leaves a lot to the implementation. The presence of two affiliated links does not prove that one client is transmitting or receiving simultaneously on both, that traffic is split evenly, or that application throughput will equal the sum of two standalone links. Radio capabilities, firmware, drivers, and scheduling all affect what happens over the air.",
+          "I kept each tested channel at 80 MHz and excluded 2.4 GHz. This avoided giving one single-link baseline a wider channel than the other, while letting the MLO configuration access the two 80 MHz links. OFDMA remained enabled across conditions; the experiments did not isolate its contribution. The measurements describe the throughput of this complete configuration rather than the efficiency of an internal scheduler."
+        ]
+      },
+      {
+        "heading": "building the physical testbed",
+        "paragraphs": [
+          "The experiment used a UniFi U7 Pro connected through a UniFi Flex 2.5G PoE switch to a wired Windows 11 iPerf3 endpoint. The AP’s 2.5 Gbps Ethernet connection was chosen to reduce the chance that a gigabit uplink would cap the wireless aggregate before the feature under test could show a difference.",
+          "Up to eight Dell Latitude 3400 laptops acted as wireless clients. Each used an Intel BE200 adapter and Windows 11, keeping the client hardware platform consistent across conditions. The documented software setup used AP firmware 8.7.11, UniFi network application 10.6.106, and iPerf3 3.21. These are the versions used for this experiment.",
+          "The AP was mounted six feet above the floor with its top facing downward, and client laptops sat approximately 2.5 feet above the floor. Distance markers referenced the AP’s floor position, so the reported distances are horizontal distances. Tests ran in Dudley Hall’s room 5431 during periods when the building was largely unoccupied to reduce outside wireless activity.",
+          "Separate SSIDs selected 5 GHz single-link, 6 GHz single-link, or MLO. The channels were fixed to the documented 5 GHz channel 40 and 6 GHz channel 5 configurations, both at 80 MHz, with WPA3 on the test network. Static IP addresses kept endpoint addressing consistent between scenarios."
+        ],
+        "image": {
+          "src": "/post_images/wifi7_mlo_layout.png",
+          "alt": "Experiment Set 1 placement diagram showing the central AP and client positions at 5, 10, 20, and 30 horizontal feet, with markers for the different client-count configurations.",
+          "caption": "Thesis Figure 1: the placement plan for Experiment Set 1. The drawing is a layout guide and is not to scale."
+        }
+      },
+      {
+        "heading": "confirming the feature was active",
+        "paragraphs": [
+          "An MLO-enabled setting in the management interface was not enough to begin a run. Before throughput testing, I captured association traffic and inspected the management frames for Multi-Link Elements, then checked the intended affiliated links in the UniFi interface. If negotiation could not be confirmed, the wireless adapter was disabled and re-enabled and the association checked again.",
+          "A separate Ubuntu 22.04 machine with an Intel BE200 adapter and Wireshark 4.6.7 captured frames near the AP. Captures and throughput logs were saved under matching scenario identifiers, making it possible to connect a measurement with the setup that produced it. Scenarios with anomalies identified during validation were rerun before moving on.",
+          "This step established that the clients had negotiated the intended MLO association. It did not establish how many payload bytes crossed each band during the test. I did not collect the per-link airtime and traffic-allocation evidence needed to explain exactly how the implementation used its affiliated links."
+        ]
+      },
+      {
+        "heading": "285 runs, two different experiments",
+        "paragraphs": [
+          "Experiment Set 1 combined three operating modes, four client counts, and four distances: 1, 2, 4, or 8 active clients at 5, 10, 20, or 30 feet. Five repetitions of each of the 48 conditions produced 240 aggregate runs. Those measurements answered both the MLO-versus-single-link question and the question of how MLO scaled with additional clients.",
+          "Experiment Set 2 used one client at 5, 15, and 30 feet, again across all three operating modes with five repetitions. Its nine conditions produced another 45 runs. Distance was the controlled variable; I did not add artificial interference, obstructions, or independently controlled attenuation to one band.",
+          "Each client ran a 60-second reverse-mode iPerf3 test with four parallel TCP streams. Reverse mode sent the payload from the wired endpoint toward the wireless laptops. Multiple client processes connected to assigned server ports, and PowerShell scripts used synchronized clocks and a common scheduled start time to make their measurement intervals overlap as closely as possible.",
+          "A one-minute rest separated runs. Each client wrote a scenario-, client-, and trial-specific log, and server processes and wireless associations were reset between scenarios. With eight clients active, the workload contained 32 TCP streams, but the statistical observation was still the aggregate result of one run. Parallel streams were traffic-generation settings, not additional independent trials."
+        ]
+      },
+      {
+        "heading": "turning throughput logs into comparisons",
+        "paragraphs": [
+          "For a run with $n$ active clients, I summed the receiver throughput $x_{i,r}$ of each client $i$ to obtain aggregate throughput $A_r$. The condition mean came from the five run-level aggregates:",
+          "$$A_r=\\sum_{i=1}^{n}x_{i,r},\\qquad \\bar{A}=\\frac{1}{5}\\sum_{r=1}^{5}A_r$$",
+          "This separates three quantities that can otherwise be easy to confuse: the AP’s combined received payload rate across clients, the throughput available to each individual client, and the advertised radio link rate. The thesis evaluates TCP receiver throughput, and its multi-client aggregate is not a speed that every client receives.",
+          "For the matched MLO-versus-single-link comparison, I expressed the difference relative to the single-link mean $\\bar{A}_{\\mathrm{SL}}$:",
+          "$$\\Delta_{\\mathrm{MLO,SL}}=100\\,\\frac{\\bar{A}_{\\mathrm{MLO}}-\\bar{A}_{\\mathrm{SL}}}{\\bar{A}_{\\mathrm{SL}}}\\%$$",
+          "The analysis also used standard deviations and Student’s t confidence intervals based on five run-level measurements per condition. With sample standard deviation $s$, the 95% interval is $\\bar{A}\\pm t_{0.975,4}s/\\sqrt{5}$. Those intervals describe the repeated measurements under the tested conditions; they do not cover variation across other hardware or buildings."
+        ]
+      },
+      {
+        "heading": "where MLO delivered more capacity",
+        "paragraphs": [
+          "The clearest example came at 30 feet with four active clients. Mean aggregate throughput was 1613.70 Mbps for MLO, 831.98 Mbps for 5 GHz, and 892.53 Mbps for 6 GHz. Relative to the corresponding single-link configurations, that is approximately 94.0% and 80.8% more received payload throughput.",
+          "That pattern held across all tested combinations with two, four, or eight clients: MLO’s aggregate mean exceeded both single-link means at the same client count and distance. This is the comparison that establishes the observed benefit of enabling MLO in the testbed. Merely adding another client and seeing a larger aggregate would not establish the same thing.",
+          "The one-client result was different. At 30 feet, MLO reached 946.50 Mbps and 6 GHz reached 947.19 Mbps, effectively the same mean throughput. At 20 feet, MLO fell to 716.62 Mbps while 6 GHz reached 921.64 Mbps, putting MLO about 22.2% below that baseline. MLO exceeded 5 GHz in these conditions, but did not exceed 6 GHz at any of the four single-client distances.",
+          "The three-way ANOVA reported a mode-by-client-count-by-distance interaction of F(18, 192) = 32.79, with p < 0.001. The effect of operating mode depended jointly on the workload and placement. That supports a conditional explanation of the results rather than assigning one universal percentage gain to MLO."
+        ],
+        "image": {
+          "src": "/post_images/wifi7_mlo_comparison.png",
+          "alt": "Four panels compare aggregate TCP throughput for 5 GHz, 6 GHz, and MLO at 5 to 30 feet with one, two, four, and eight clients. MLO is higher in the multi-client panels but not above 6 GHz in the single-client panel.",
+          "caption": "Thesis Figure 4: aggregate receiver throughput by client count and distance. Each condition contains five 60-second trials; the analysis uses run-level means and 95% t confidence intervals."
+        }
+      },
+      {
+        "heading": "more clients did not mean unlimited scaling",
+        "paragraphs": [
+          "Averaging MLO results across the four distances gives approximately 882 Mbps with one client, 1650 Mbps with two, 1653 Mbps with four, and 1594 Mbps with eight. The largest jump was from one to two clients, about 87%. Four clients barely changed the aggregate, and eight reduced it slightly.",
+          "The system had reached a practical throughput plateau under these workloads. Additional clients shared the available aggregate rather than increasing it in proportion to their count. The measurements do not identify one component as the cause of that plateau; wireless airtime, AP processing, client behavior, and other implementation constraints remain possible contributors.",
+          "An aggregate of about 1594 Mbps divided among eight clients corresponds to an average of roughly 199 Mbps per client, while about 1650 Mbps divided among two corresponds to roughly 825 Mbps. Those calculations describe equal-share averages for interpreting the total; actual client rates need to be inspected separately.",
+          "Placement mattered too. With two clients, MLO reached 1783.00 Mbps at 20 feet but fell to 1349.33 Mbps at 30 feet. That was a different distance response from the four-client case. The MLO-only ANOVA reported a client-count-by-distance interaction of F(9, 64) = 50.55, with p < 0.001, consistent with the different shapes of the curves."
+        ],
+        "image": {
+          "src": "/post_images/wifi7_mlo_scaling.png",
+          "alt": "MLO aggregate throughput curves show a large increase from one to two clients followed by a plateau or decline at four and eight clients across four distances.",
+          "caption": "Thesis Figure 6: MLO scaling across active client count. Each curve holds distance fixed; a larger client count does not produce proportional growth in aggregate throughput."
+        }
+      },
+      {
+        "heading": "checking who received the extra throughput",
+        "paragraphs": [
+          "An aggregate result can conceal a very different experience for individual clients. I looked at the four-client condition at 20 feet to check whether one unusually fast station accounted for the improvement. All four clients had higher mean throughput under MLO than under either single-link mode.",
+          "The MLO per-client means were 416.76, 390.68, 427.35, and 370.63 Mbps. The corresponding 5 GHz means ranged from 203.54 to 229.13 Mbps, and the 6 GHz means ranged from 229.27 to 254.47 Mbps. The aggregate improvement in this example therefore reached each active client.",
+          "That result is useful, but it has a specific scope. It does not establish equal sharing in every condition, long-term fairness, or the experience of clients with different adapters and radio capabilities. It shows why keeping the individual-client logs matters even when aggregate capacity is the primary research metric."
+        ],
+        "image": {
+          "src": "/post_images/wifi7_mlo_per_client.png",
+          "alt": "Grouped bars compare each of four clients at 20 feet. Each client has a higher mean throughput with MLO than with either 5 GHz or 6 GHz single-link operation.",
+          "caption": "Thesis Figure 8: per-client means for the four-client, 20-foot condition. Higher aggregate throughput was distributed across all four clients in this example."
+        }
+      },
+      {
+        "heading": "distance changed the result across bands",
+        "paragraphs": [
+          "The second experiment removed multi-client contention and followed one client through a separate 5-, 15-, and 30-foot placement arrangement. At five feet, mean throughput was 615.8 Mbps on 5 GHz, 954.2 Mbps on 6 GHz, and 911.6 Mbps with MLO. At 30 feet, the corresponding values were 621.8, 854.8, and 834.4 Mbps.",
+          "The 5 GHz condition remained relatively stable while 6 GHz and MLO declined. At the intermediate 15-foot placement, MLO measured 877.8 Mbps versus 943.2 Mbps on 6 GHz, continuing the pattern of no single-client throughput advantage over that baseline.",
+          "These are the results of Experiment Set 2, which used its own placement arrangement and repetitions. They should be read within that experiment rather than averaged together with single-client values from Set 1. In both sets, comparisons between operating modes use the matched conditions from the same experiment.",
+          "This part of the thesis began with a question about link asymmetry. What the measurements establish directly is a difference in throughput response to distance. Without per-link RSSI, SNR, modulation, airtime, and payload-distribution measurements, they do not quantify how asymmetric the two affiliated links became or show which one carried the MLO traffic."
+        ],
+        "image": {
+          "src": "/post_images/wifi7_mlo_distance.png",
+          "alt": "Experiment Set 2 throughput across 5, 15, and 30 feet: 5 GHz remains near 620 Mbps, while 6 GHz declines from 954.2 to 854.8 Mbps and MLO declines from 911.6 to 834.4 Mbps.",
+          "caption": "Thesis Figure 9: absolute receiver throughput in the separate single-client distance experiment. These trials are kept distinct from Experiment Set 1."
+        }
+      },
+      {
+        "heading": "a smaller decline was not a higher final speed",
+        "paragraphs": [
+          "To compare how each mode changed from its own starting point, I normalized its mean throughput at distance $d$ to its five-foot baseline:",
+          "$$Q_m(d)=100\\,\\frac{\\bar{x}_m(d)}{\\bar{x}_m(5\\text{ ft})}\\%$$",
+          "From five to 30 feet, 5 GHz increased by about 1.0%, 6 GHz declined by 10.4%, and MLO declined by 8.5%. MLO retained a slightly larger fraction of its starting throughput than 6 GHz, but its absolute throughput at 30 feet was still lower: 834.4 versus 854.8 Mbps.",
+          "That distinction matters when reading a normalized graph. Retaining more of a lower baseline does not imply that an application receives more data per second at the final location. The absolute and normalized plots answer complementary questions, and neither should replace the other.",
+          "The mode-by-distance interaction in this experiment was F(4, 36) = 10.34, with p < 0.001. The statistical result supports different distance responses among the configurations. It does not identify the radio scheduling behavior that produced those responses, or establish that each plotted pairwise difference is individually significant."
+        ],
+        "image": {
+          "src": "/post_images/wifi7_mlo_normalized.png",
+          "alt": "Throughput normalized to each operating mode’s five-foot baseline shows approximately 101% for 5 GHz, 89.6% for 6 GHz, and 91.5% for MLO at 30 feet.",
+          "caption": "Thesis Figure 10: each operating mode is normalized to its own five-foot mean. The vertical axis is narrowed to emphasize relative change, so read it alongside the absolute throughput figure."
+        }
+      },
+      {
+        "heading": "what I took from the study",
+        "paragraphs": [
+          "The strongest finding was about concurrent demand. In this physical lab, MLO provided additional aggregate capacity when several clients were active, and the difference could be substantial. The same hardware did not give a single active client greater throughput than its 6 GHz connection. Workload and placement were essential parts of the result.",
+          "The study also reinforced how much of a networking experiment happens around the speed test: keeping channel widths consistent, verifying the negotiated feature, coordinating concurrent traffic, preserving individual-client measurements, and defining the observation used in the statistical analysis. Each decision affected what the final numbers could support.",
+          "There are clear limits to the evidence. This was one laboratory, one AP model, one client-adapter platform, at most eight clients, and five repetitions per condition. The room was largely unoccupied during testing, so the results do not reproduce a busy classroom’s background traffic. I measured downlink TCP throughput, leaving uplink behavior, latency, jitter, loss, mobility, and real-time application performance for future work.",
+          "The next useful step would be to pair these receiver measurements with per-link RF and scheduling observations, then repeat the experiment across more client counts and different AP and adapter combinations. That would help explain whether the plateau and single-client behavior come from this implementation or persist across other systems.",
+          "This article follows my thesis revision, An Empirical Evaluation of 802.11be Multi-Link Operation Performance in a Controlled Educational Environment. The figures are extracted from the thesis. The CSV below transcribes the 285 run-level throughput values from Appendices A and B: Set 1 uses the reported aggregate row, and Set 2 uses the single-client receiver measurement. Values retain the precision reported in the document."
+        ],
+        "links": [
+          {
+            "href": "/post_documents/wifi7_mlo_throughput.csv",
+            "label": "Download the thesis run-level throughput data (CSV)"
+          }
+        ]
+      }
+    ]
   }
 ]
