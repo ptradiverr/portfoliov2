@@ -389,4 +389,81 @@ export const projects: ProjectWriteup[] = [
       }
     ]
   }
+
+  {
+  slug: 'migrating-my-homelab-from-raspberry-pis-to-proxmox',
+  title: 'Migrating My Homelab from Raspberry Pis to Proxmox',
+  summary: 'Moving my services from a Pi K3s cluster to two OptiPlex hosts, while working through quorum, networking, deployment, monitoring, and recovery.',
+  tags: ['Kubernetes', 'Proxmox', 'Networking', 'Infrastructure', 'DevOps'],
+  sections: [
+    {
+      heading: 'why move a working cluster',
+      paragraphs: [
+        "The Pi cluster started as a way to give hardware I already had something useful to do. It ended up hosting my portfolio, a Pokémon tracker, and an HLTV service, with monitoring and deployments around them. Once I relied on those services, I started paying more attention to the parts that made them work: the machine running the control plane, where data was stored, and what happened when I needed to make a change.",
+        "The Pis were useful for learning, but their memory and SD-card storage made it harder to add services without watching every resource decision. I had two Dell OptiPlex 5070 Micros available, each with an i7-9700T, 16 GB of RAM, and a 500 GB SSD. I wanted to use that extra capacity without throwing away the working environment before its replacement was ready.",
+        "I built a second cluster alongside the first, moved and checked services one at a time, and retired the old K3s installation afterward. The move also gave me a chance to revisit assumptions I had made while the lab was growing, particularly around quorum, local storage, and what a successful deployment actually proves."
+      ]
+    },
+    {
+      heading: 'two hosts, three votes',
+      paragraphs: [
+        "I installed Proxmox on the two OptiPlexes and made them a cluster. Each host has one Kubernetes control-plane VM and two worker VMs. A Raspberry Pi provides the third control plane. K3s uses embedded etcd, so each control plane also has a vote in the database that holds cluster state.",
+        "My first thought was to put two control planes on one OptiPlex and one on the other. That gives me three VMs, but not three independent places for them to run. Losing the host with two VMs would also remove two etcd votes. Putting the third voter on a Pi means either OptiPlex can fail without automatically taking a majority with it, provided the other members remain healthy and connected.",
+        "The Pi has its own drawback: it uses an SD card, which is a less comfortable place for etcd than an SSD. I accepted that for the current lab because I already had the hardware, but the card remains a dependency I want to improve. The two workers on each OptiPlex also share that host's power, disk, and network connection. Separate VMs give me separate nodes to work with; they do not make those failures independent.",
+        "Proxmox has its own quorum to maintain, separate from Kubernetes. I used another Pi as a Corosync QDevice for the two Proxmox hosts. It participates in the Proxmox quorum decision; it is not an etcd voter and does not replace the third Kubernetes control plane."
+      ]
+    },
+    {
+      heading: 'an address for the cluster',
+      paragraphs: [
+        "I placed the new nodes on the existing server VLAN and gave them reserved addresses. The old and new clusters needed to coexist during the migration, so I gave the new cluster its own pod and Service ranges. That let me build and test it without treating the old pod network as if it had moved with the applications.",
+        "The Kubernetes API also needed an address that wasn't tied to whichever control-plane VM I happened to configure first. I used kube-vip for a shared address and pointed clients at it. I tested failover by removing the active kube-vip pod and checking that another instance took over. That was useful evidence for the VIP path, although I haven't tested a complete physical-host failure.",
+        "K3s uses Flannel with VXLAN for pod networking. I placed test pods on different workers and checked that they could communicate before moving applications. Earlier, I had a separate two-Pi Cilium lab, which was useful for trying Hubble and network policy without changing production. The lab also exposed an endpoint mistake: an API address of 127.0.0.1 worked on the server, but pointed back to the worker when the second Pi tried to join. I corrected it to the server's reachable address.",
+        "Cilium's Envoy component also failed on that Pi kernel, so I disabled its L7 proxy features to continue the lab. I kept Flannel for the new cluster rather than making the CNI migration another moving part. That leaves the Cilium features I experimented with out of the production setup for now."
+      ]
+    },
+    {
+      heading: 'moving applications without moving the outage',
+      paragraphs: [
+        "The new worker VMs are AMD64, while the Pis are ARM64. An image that worked on the Pi cluster was not automatically usable on the OptiPlexes. I changed the portfolio and tracker builds to publish both architectures and checked the HLTV images and scheduling choices for the new nodes. Pinning an image by digest makes the exact build being deployed explicit, but the digest still has to include an image compatible with the target architecture.",
+        "I kept the old and new deployment paths separate while bringing the services across. The new application playbook checks the target cluster before applying one selected application, instead of reusing the old Pi server provisioning path. I verified application rollouts and connectivity on the new cluster before retiring the old one. The old databases contained little data, so I chose to start those applications with fresh databases instead of carrying their previous contents across.",
+        "The portfolio has two replicas and an internal Kubernetes Service. Two cloudflared connectors maintain outbound tunnel connections to Cloudflare, which routes the public hostname to that Service. I moved the connectors into their own namespace and kept the tunnel credential there. That gives the connector and application separate management boundaries, although a namespace alone is not a network firewall.",
+        "The tracker and HLTV service have different needs. Both use a single replica and node-local SQLite storage, with a Recreate update strategy to avoid overlapping writers. That is straightforward for small workloads but causes an interruption during an update and ties the data to one worker. A Bound PVC means Kubernetes has found storage; it doesn't mean there is a second copy on another node."
+      ]
+    },
+    {
+      heading: 'making deployments repeatable',
+      paragraphs: [
+        "The portfolio source and infrastructure live in separate repositories. A portfolio change builds and publishes a multi-architecture image, then dispatches a deployment with the image digest. The deployment runner reaches the Kubernetes API through the VIP using a scoped service account and waits for the rollout. A successful image build or dispatch is not the same as a successful deployment, so the deployment run has to be checked separately.",
+        "I separated the portfolio deployer's access from the tunnel namespace. The deployer can patch the portfolio Deployment but can't directly read the tunnel Secret. The permission is still meaningful: Kubernetes RBAC doesn't restrict that patch to just the image field, so the credential needs protection and rotation. Its kubeconfig uses a time-limited token, and rotation is currently manual. The deployed digest is recorded in the workflow output rather than automatically written back to Git.",
+        "Pokédex and HLTV use a separate manually triggered workflow. It calls the application playbook over SSH to the first control-plane VM, so that management path still depends on that VM even though the cluster has an API VIP. The tracker password and the private HLTV collector's registry credentials are supplied as secrets rather than put into manifests or images."
+      ]
+    },
+    {
+      heading: 'keeping monitoring outside the cluster',
+      paragraphs: [
+        "I considered running Prometheus and Grafana as Kubernetes workloads, but kept them on a Pi outside the new cluster. That gives me somewhere to look when the Kubernetes API or its workloads are having trouble. The tradeoff is another machine and another set of credentials and configuration to maintain; if the monitoring Pi or its storage fails, the dashboards and their local history go with it.",
+        "Node exporters provide host metrics for the Pis and VMs. Prometheus also collects Kubernetes state and kubelet metrics using a restricted cluster identity, and Grafana has host and cluster dashboards. I removed the old cluster's scrape jobs after retirement and kept the new ones. Metrics are kept locally for seven days. There is no configured alert delivery, so a green dashboard when I check it isn't the same as being notified when something breaks.",
+        "The HLTV collector was a good example of why infrastructure health isn't the whole picture. The pod and PVC were healthy and the API rolled out, but a player-data request received an upstream 403. Results and upcoming matches had been stored successfully. Restarting a pod or changing the cluster doesn't establish that an outside service will allow the request, so I left that issue visible for later rather than treating the rollout as a complete application test."
+      ]
+    },
+    {
+      heading: 'a copy is not a recovery plan',
+      paragraphs: [
+        "I set up daily snapshots of the tracker and HLTV SQLite databases to another Pi. SQLite's online backup API creates the snapshots while the applications are running, including committed write-ahead-log data. The receiver checks the files before placing them in private directories. A restricted SSH key can send backups to the receiver without granting an interactive shell.",
+        "That improves the situation over having only a local PVC, but it is one extra copy on one Pi's SD card. The timer runs on the first control-plane VM and doesn't automatically move if that VM is down. The received databases passed integrity checks, including checks of temporary restored copies, but I haven't completed a full application restore into a PVC. There is also no backup retention limit yet, so the destination can fill over time.",
+        "The application backups don't replace etcd snapshots or the K3s server token, which need their own secure recovery plan. I also kept Prometheus data and application data separate in my thinking: seven days of monitoring history helps investigate a problem, but it won't restore a lost database."
+      ]
+    },
+    {
+      heading: 'what i kept and what is next',
+      paragraphs: [
+        "After checking the new services, I retired the old Pi K3s cluster. The Pis still have jobs: one runs monitoring and the Proxmox QDevice, one stores application backups, and another runs the deployment runner. Terraform and Ansible continue to describe the Pi services, while manifests and application workflows manage the new cluster.",
+        "I had also tested MetalLB BGP against pfSense on the old cluster. That experiment advertised a demo Service address to the router, but I haven't brought it to the new cluster yet. The public portfolio doesn't need that path because it uses the tunnel. When I return to BGP, I can give it a separate address plan and test routes and client traffic without making it a prerequisite for the migration.",
+        "The cluster now has more compute capacity and a control-plane layout spread across three devices. It still depends on shared home power and networking, local worker disks, the Pi's SD card, and several manually maintained credentials. My next work is to test an application restore, improve backup retention and visibility, and eventually replace the Pi control plane's SD storage. Those are the parts that will tell me more about recovery than another successful rollout alone."
+      ]
+    }
+  ]
+},
+
 ]
