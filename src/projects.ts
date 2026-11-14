@@ -388,7 +388,7 @@ export const projects: ProjectWriteup[] = [
         ]
       }
     ]
-  }
+  },
 
   {
   slug: 'migrating-my-homelab-from-raspberry-pis-to-proxmox',
