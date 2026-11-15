@@ -395,6 +395,11 @@ export const projects: ProjectWriteup[] = [
   title: 'Migrating My Homelab from Raspberry Pis to Proxmox',
   summary: 'Moving my services from a Pi K3s cluster to two OptiPlex hosts, while working through quorum, networking, deployment, monitoring, and recovery.',
   tags: ['Kubernetes', 'Proxmox', 'Networking', 'Infrastructure', 'DevOps'],
+  image: {
+    src: '/post_images/updated-cluster-cover.jpg',
+    alt: 'Updated homelab with two Dell OptiPlex hosts, Raspberry Pis, and networking equipment',
+    previewFit: 'contain',
+  },
   sections: [
     {
       heading: 'why move a working cluster',
