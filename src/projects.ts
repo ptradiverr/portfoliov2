@@ -32,6 +32,7 @@ export const projects: ProjectWriteup[] = [
       src: '/post_images/rack-cover.jpg',
       alt: 'Home lab rack for my Raspberry Pi Kubernetes cluster',
       caption: 'Current "rack" infrastructure (ignore the terrible cable management)',
+      previewFit: 'contain',
     },
     sections: [
       {
